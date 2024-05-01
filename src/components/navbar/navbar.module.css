@@ -1,0 +1,23 @@
+.navbarItem {
+  position: relative;
+  padding: 0 10px;
+}
+
+.navbarItem:after {
+  content: "";
+  position: absolute;
+  background-color: #ece6d5;
+  height: 3px;
+  width: 0;
+  left: 0;
+  bottom: -8px;
+  transition: 0.3s;
+}
+
+.navbarItem:hover {
+  color: white;
+}
+
+.navbarItem:hover:after {
+  width: 100%;
+}
