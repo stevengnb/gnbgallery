@@ -77,7 +77,7 @@ export default function Gallery() {
             </div>
           ) : (
             <>
-              <div className="pt-8 w-full 2xl:columns-5 gap-x-6 sm:gap-x-8 xl:columns-4 sm:columns-3 columns-2 transition-all duration-500">
+              <div className="pt-8 w-full lg:columns-5 gap-x-6 sm:gap-x-8 md:columns-4 sm:columns-3 columns-2 transition-all duration-500">
                 {photos
                   .slice()
                   .sort(
