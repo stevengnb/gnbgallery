@@ -1,6 +1,6 @@
 import Transition from "../../settings/transition";
 import BackButton from "../../components/back-button";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { auth, db } from "../../firebase/firebase-config";
 import { IUser } from "../../interface/user";
