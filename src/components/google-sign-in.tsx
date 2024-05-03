@@ -1,5 +1,5 @@
 import { FcGoogle } from "react-icons/fc";
-import { signInWithRedirect } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../firebase/firebase-config";
 import { useNavigate } from "react-router-dom";
 
@@ -8,7 +8,7 @@ export default function GoogleSignIn({ authType }: { authType: string }) {
 
   const signInWithGoogle = async () => {
     try {
-      await signInWithRedirect(auth, googleProvider);
+      await signInWithPopup(auth, googleProvider);
       navigate("/");
     } catch (err) {
       console.log("ERROR = ", err);
