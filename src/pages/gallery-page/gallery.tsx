@@ -39,10 +39,7 @@ export default function Gallery() {
             desc: photo.desc,
           }));
           setPhotos(photosData);
-          setTimeout(() => {
-            setLoading(false);
-          }, 2000);
-          console.log(doc.data().photos);
+          setLoading(false);
           return;
         }
       });
@@ -62,7 +59,11 @@ export default function Gallery() {
         {auth.currentUser?.uid === userData?.id && <AddButton />}
         <div className="flex flex-col justify-start items-center">
           <div className="flex flex-col gap-3 sm:gap-4">
-            <img className="max-w-32 rounded-full" src={userData?.profile} />
+            <img
+              className="max-w-32 rounded-full"
+              src={userData?.profile}
+              loading="lazy"
+            />
             <p
               className="font-bold text-lg tracking-wider"
               style={{ fontFamily: "suisseregular" }}
@@ -85,12 +86,14 @@ export default function Gallery() {
                       new Date(b.time).getTime() - new Date(a.time).getTime()
                   )
                   .map((photo, index) => (
-                    <img
-                      key={index}
-                      src={photo.url}
-                      alt={`Photo ${index}`}
-                      className="w-full mb-6 sm:mb-8 object-cover object-center"
-                    />
+                    <div key={index} className="hover:cursor-pointer">
+                      <img
+                        key={index}
+                        src={photo.url}
+                        alt={`Photo ${index}`}
+                        className="w-full mb-6 sm:mb-8 object-cover object-center pointer-events-none"
+                      />
+                    </div>
                   ))}
               </div>
             </>

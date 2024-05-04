@@ -7,6 +7,7 @@ import Loader from "../../components/loader/loader";
 import { db, imageDb } from "../../firebase/firebase-config";
 import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
 import { doc, updateDoc, arrayUnion, Timestamp } from "firebase/firestore";
+import webpfy from "webpfy";
 
 export default function AddPhoto() {
   const [image, setImage] = useState<File | null>(null);
@@ -56,9 +57,7 @@ export default function AddPhoto() {
       return;
     }
 
-    const imgRef = ref(imageDb, `gallery/${fileName}`);
-    const contentType =
-      image.type === "image/jpeg" ? "image/jpeg" : "image/png";
+    const contentType = "image/webp";
     const fileReader = new FileReader();
     let url;
 
@@ -80,12 +79,28 @@ export default function AddPhoto() {
             return;
           }
 
-          await uploadBytes(imgRef, fileData, { contentType });
-          url = await getDownloadURL(imgRef);
-          console.log("Download URL:", url);
-          addPhotoToDB(url);
+          let imgRef: any = null;
 
-          setLoading(false);
+          webpfy({ image })
+            .then((result) => {
+              const { webpBlob, fileName } = result;
+              imgRef = ref(imageDb, `gallery/${fileName}`);
+              return uploadBytes(imgRef, webpBlob, { contentType });
+            })
+            .then(async () => {
+              if (!imgRef) {
+                throw new Error("Image reference not found.");
+              }
+              url = await getDownloadURL(imgRef);
+              addPhotoToDB(url);
+              // console.log("Download URL:", url);
+              clearAllFields();
+            })
+            .catch((error) => {
+              setErrorMessage("Error converting image. Please try again.");
+              setLoading(false);
+              throw error;
+            });
           clearAllFields();
         }
       } catch (error) {
@@ -94,6 +109,7 @@ export default function AddPhoto() {
       }
     };
     fileReader.readAsArrayBuffer(image);
+    setLoading(false);
   };
 
   const addPhotoToDB = async (url: string) => {
