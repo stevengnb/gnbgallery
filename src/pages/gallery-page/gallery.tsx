@@ -1,56 +1,23 @@
 import Transition from "../../settings/transition";
 import BackButton from "../../components/back-button";
-import { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { auth, db } from "../../firebase/firebase-config";
-import { IUser } from "../../interface/user";
+import { useContext } from "react";
+import { auth } from "../../firebase/firebase-config";
 import Loader from "../../components/loader/loader";
 import SecuredRoute from "../../settings/secured-routes";
 import AddButton from "../../components/add-button";
+import { useNavigate } from "react-router-dom";
+import { DataContext } from "../../context/data-context";
 
 export default function Gallery() {
-  const [photos, setPhotos] = useState<
-    { url: string; time: Date; desc: string }[]
-  >([]);
-  const [userData, setUserData] = useState<IUser | null>({
-    id: "",
-    username: "",
-    bio: "",
-    profile: "",
-  });
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const { userData, photos, loading } = useContext(DataContext);
 
-  const fetchData = async () => {
-    try {
-      const querySnapshot = await getDocs(collection(db, "users"));
-      querySnapshot.forEach((doc) => {
-        if (doc.data().photos.length > 0) {
-          setUserData({
-            id: doc.id,
-            username: doc.data().username,
-            bio: doc.data().bio,
-            profile: doc.data().profile,
-          });
-          const photosData = doc.data().photos.map((photo: any) => ({
-            url: photo.url,
-            time: new Date(
-              photo.time.seconds * 1000 + photo.time.nanoseconds / 1000000
-            ),
-            desc: photo.desc,
-          }));
-          setPhotos(photosData);
-          setLoading(false);
-          return;
-        }
-      });
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+
+  const getId = (id: string) => {
+    const ids = id.split("token=")[1];
+    const lastChar = ids.slice(-15);
+    return lastChar;
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   return (
     <SecuredRoute>
@@ -86,7 +53,11 @@ export default function Gallery() {
                       new Date(b.time).getTime() - new Date(a.time).getTime()
                   )
                   .map((photo, index) => (
-                    <div key={index} className="hover:cursor-pointer">
+                    <div
+                      key={index}
+                      className="hover:cursor-pointer"
+                      onClick={() => navigate(`/stevengnb/${getId(photo.url)}`)}
+                    >
                       <img
                         key={index}
                         src={photo.url}

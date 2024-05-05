@@ -27,6 +27,9 @@ module.exports = {
         120: "30rem",
         128: "32rem",
         150: "37.5rem",
+        170: "42.5rem",
+        180: "45rem",
+        190: "47.5rem",
       },
       colors: {
         border: "hsl(var(--border))",

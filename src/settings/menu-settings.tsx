@@ -3,6 +3,7 @@ import Login from "../pages/authentication-page/login";
 import Register from "../pages/authentication-page/register";
 import Gallery from "../pages/gallery-page/gallery";
 import AddPhoto from "../pages/gallery-page/add-photo";
+import PhotoDetail from "../pages/gallery-page/photo-detail";
 
 export interface IMenu {
   name: string;
@@ -32,8 +33,13 @@ export const MENU_LIST: IMenu[] = [
     path: "/stevengnb",
   },
   {
-    element: <AddPhoto/>,
+    element: <AddPhoto />,
     name: "Add",
     path: "/stevengnb/add",
+  },
+  {
+    element: <PhotoDetail />,
+    name: "Photo Detail",
+    path: "/stevengnb/:photoId",
   },
 ];
