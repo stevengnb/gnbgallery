@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase/firebase-config";
-import { authorizeUser } from "./authorized-user-add";
 import Loader from "../components/loader/loader";
+import Message from "../templates/message";
 
 interface Props {
   children: React.ReactNode;
@@ -26,14 +26,12 @@ const SecuredRoute: React.FC<Props> = ({ children, isAdd = false }: Props) => {
         }, redirectTime);
       } else {
         if (isAdd) {
-          authorizeUser().then((authorizedUserId) => {
-            if (auth.currentUser?.uid !== authorizedUserId) {
-              setAuthenticated(false);
-            } else {
-              setAuthenticated(true);
-            }
-            setDetermined(true);
-          });
+          if (auth.currentUser?.uid !== "Dmi3Rfay78bU0JORfl9Y7HOiqVw1") {
+            setAuthenticated(false);
+          } else {
+            setAuthenticated(true);
+          }
+          setDetermined(true);
         } else {
           setAuthenticated(true);
           setDetermined(true);
@@ -58,14 +56,7 @@ const SecuredRoute: React.FC<Props> = ({ children, isAdd = false }: Props) => {
   return authenticated ? (
     <>{children}</>
   ) : (
-    <div className="h-screen relative text-[#ECE6D5] bg-[#050c0f] flex justify-center items-center">
-      <div
-        className="text-6xl md:text-9xl transition-all duration-500"
-        style={{ fontFamily: "AntonioBold" }}
-      >
-        NOT AUTHENTICATED
-      </div>
-    </div>
+    <Message message="NOT AUTHENTICATED" />
   );
 };
 

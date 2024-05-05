@@ -46,13 +46,17 @@ export default function PhotoDetail() {
   return (
     <SecuredRoute>
       <div className="relative w-screen h-screen overflow-x-hidden justify-center items-center flex flex-col py-20 md:p-10">
-        <BackButton isFixed={true} isAdd={true} />
+        <BackButton isFixed={true} isDetail={true} />
         {loading ? (
           <Loader />
         ) : (
           <div className="w-full h-full flex flex-col items-center">
-            <div className="max-h-170 md:h-170 2xl:h-128 flex justify-center">
-              <img src={photo.url} alt="Photo" className="max-h-full" />
+            <div className="max-h-170 md:h-170 2xl:h-140 flex justify-center">
+              <img
+                src={photo.url}
+                alt="Photo"
+                className="max-h-full pointer-events-none"
+              />
             </div>
             <div className="h-full p-6 w-full lg:w-1/2 flex flex-col items-start gap-2 md:gap-6">
               <p
