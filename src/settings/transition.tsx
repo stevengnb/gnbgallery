@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const Transition = () => {
+const Transition = ({isHome = false}) => {
   return (
     <>
       <motion.div
@@ -9,7 +9,7 @@ const Transition = () => {
         initial={{ scaleY: 1 }}
         animate={{ scaleY: 0 }}
         exit={{ scaleY: 0 }}
-        transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: isHome ? 2 : 1.5, ease: [0.22, 1, 0.36, 1] }}
       />
     </>
   );
