@@ -1,6 +1,6 @@
 import Transition from "../../settings/transition";
 import BackButton from "../../components/back-button";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { auth } from "../../firebase/firebase-config";
 import Loader from "../../components/loader/loader";
 import SecuredRoute from "../../settings/secured-routes";
@@ -11,7 +11,21 @@ import { DataContext } from "../../context/data-context";
 export default function Gallery() {
   const navigate = useNavigate();
   const { userData, photos, loading, getId } = useContext(DataContext);
-  const limitedPhotos = photos.slice(0, 10);
+  const [displayCount, setDisplayCount] = useState(10);
+  const [showLoadMore, setShowLoadMore] = useState(false);
+  const limitedPhotos = photos.slice(0, displayCount);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setShowLoadMore(true);
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  const loadMorePhotos = () => {
+    setDisplayCount(displayCount + 10);
+  };
 
   return (
     <SecuredRoute>
@@ -55,6 +69,19 @@ export default function Gallery() {
                   </div>
                 ))}
               </div>
+              {showLoadMore && (
+                <div className="w-full flex items-center justify-center">
+                  {photos.length > displayCount && (
+                    <button
+                      onClick={loadMorePhotos}
+                      style={{ fontFamily: "suisseregular" }}
+                      className="mt-4 px-6 py-2 bg-black text-white rounded-full hover:opacity-90 transition-colors duration-300"
+                    >
+                      Load More
+                    </button>
+                  )}
+                </div>
+              )}
             </>
           )}
         </div>
