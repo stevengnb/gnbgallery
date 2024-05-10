@@ -11,6 +11,7 @@ import { DataContext } from "../../context/data-context";
 export default function Gallery() {
   const navigate = useNavigate();
   const { userData, photos, loading, getId } = useContext(DataContext);
+  const limitedPhotos = photos.slice(0, 10);
 
   return (
     <SecuredRoute>
@@ -39,7 +40,7 @@ export default function Gallery() {
           ) : (
             <>
               <div className="pt-8 w-full lg:columns-5 gap-x-6 sm:gap-x-8 md:columns-4 sm:columns-3 columns-2 transition-all duration-500">
-                {photos.map((photo, index) => (
+                {limitedPhotos.map((photo, index) => (
                   <div
                     key={index}
                     className="hover:cursor-pointer"
