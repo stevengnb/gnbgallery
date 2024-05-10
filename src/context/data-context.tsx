@@ -3,14 +3,22 @@ import { createContext, useState, useEffect } from "react";
 import { db } from "../firebase/firebase-config";
 import { IUser } from "../interface/user";
 
+const getId = (id: string) => {
+  const ids = id.split("token=")[1];
+  const lastChar = ids.slice(-15);
+  return lastChar;
+};
+
 export const DataContext = createContext<{
   userData: IUser | null;
   photos: any[];
   loading: boolean;
+  getId: (id: string) => string;
 }>({
   userData: null,
   photos: [],
   loading: true,
+  getId: getId,
 });
 
 export const DataProvider = ({ children }: { children: any }) => {
@@ -27,6 +35,7 @@ export const DataProvider = ({ children }: { children: any }) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log("fetch data kepanggil?");
       try {
         const documentRef = doc(db, "users", "Dmi3Rfay78bU0JORfl9Y7HOiqVw1");
         const docSnapshot = await getDoc(documentRef);
@@ -48,7 +57,9 @@ export const DataProvider = ({ children }: { children: any }) => {
               ),
               desc: photo.desc,
             }));
-
+            photosData.sort((a: any, b: any) => b.time - a.time);
+            console.log("photos data hrsnya ada");
+            console.log(photosData);
             setPhotos(photosData);
             setLoading(false);
           } else {
@@ -66,7 +77,7 @@ export const DataProvider = ({ children }: { children: any }) => {
   }, []);
 
   return (
-    <DataContext.Provider value={{ userData, photos, loading }}>
+    <DataContext.Provider value={{ userData, photos, loading, getId }}>
       {children}
     </DataContext.Provider>
   );

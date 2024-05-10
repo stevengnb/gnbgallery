@@ -10,14 +10,7 @@ import { DataContext } from "../../context/data-context";
 
 export default function Gallery() {
   const navigate = useNavigate();
-  const { userData, photos, loading } = useContext(DataContext);
-
-
-  const getId = (id: string) => {
-    const ids = id.split("token=")[1];
-    const lastChar = ids.slice(-15);
-    return lastChar;
-  };
+  const { userData, photos, loading, getId } = useContext(DataContext);
 
   return (
     <SecuredRoute>
@@ -46,26 +39,20 @@ export default function Gallery() {
           ) : (
             <>
               <div className="pt-8 w-full lg:columns-5 gap-x-6 sm:gap-x-8 md:columns-4 sm:columns-3 columns-2 transition-all duration-500">
-                {photos
-                  .slice()
-                  .sort(
-                    (a, b) =>
-                      new Date(b.time).getTime() - new Date(a.time).getTime()
-                  )
-                  .map((photo, index) => (
-                    <div
+                {photos.map((photo, index) => (
+                  <div
+                    key={index}
+                    className="hover:cursor-pointer"
+                    onClick={() => navigate(`/stevengnb/${getId(photo.url)}`)}
+                  >
+                    <img
                       key={index}
-                      className="hover:cursor-pointer"
-                      onClick={() => navigate(`/stevengnb/${getId(photo.url)}`)}
-                    >
-                      <img
-                        key={index}
-                        src={photo.url}
-                        alt={`Photo ${index}`}
-                        className="w-full mb-6 sm:mb-8 object-cover object-center pointer-events-none"
-                      />
-                    </div>
-                  ))}
+                      src={photo.url}
+                      alt={`Photo ${index}`}
+                      className="w-full mb-6 sm:mb-8 object-cover object-center pointer-events-none"
+                    />
+                  </div>
+                ))}
               </div>
             </>
           )}
