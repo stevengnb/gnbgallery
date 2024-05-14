@@ -10,22 +10,15 @@ import { DataContext } from "../../context/data-context";
 
 export default function Gallery() {
   const navigate = useNavigate();
-  const { userData, photos, loading, getId } = useContext(DataContext);
-  const [displayCount, setDisplayCount] = useState(10);
-  const [showLoadMore, setShowLoadMore] = useState(false);
-  const limitedPhotos = photos.slice(0, displayCount);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setShowLoadMore(true);
-    }, 3000);
-
-    return () => clearTimeout(timeoutId);
-  }, []);
-
-  const loadMorePhotos = () => {
-    setDisplayCount(displayCount + 10);
-  };
+  const {
+    userData,
+    photos,
+    loading,
+    getId,
+    limitedPhotos,
+    displayCount,
+    loadMorePhotos,
+  } = useContext(DataContext);
 
   return (
     <SecuredRoute>
@@ -57,19 +50,19 @@ export default function Gallery() {
                 {limitedPhotos.map((photo, index) => (
                   <div
                     key={index}
-                    className="hover:cursor-pointer"
+                    className="relative hover:cursor-pointer mb-6 sm:mb-8"
                     onClick={() => navigate(`/stevengnb/${getId(photo.url)}`)}
                   >
+                    <div className="absolute inset-0 bg-gray-400"></div>
                     <img
-                      key={index}
                       src={photo.url}
                       alt={`Photo ${index}`}
-                      className="w-full mb-6 sm:mb-8 object-cover object-center pointer-events-none"
+                      className="relative w-full h-full object-cover object-center pointer-events-none"
                     />
                   </div>
                 ))}
               </div>
-              {showLoadMore && (
+              {
                 <div className="w-full flex items-center justify-center">
                   {photos.length > displayCount && (
                     <button
@@ -81,7 +74,7 @@ export default function Gallery() {
                     </button>
                   )}
                 </div>
-              )}
+              }
             </>
           )}
         </div>

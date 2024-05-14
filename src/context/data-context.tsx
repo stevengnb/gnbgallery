@@ -14,11 +14,19 @@ export const DataContext = createContext<{
   photos: any[];
   loading: boolean;
   getId: (id: string) => string;
+  limitedPhotos: any[];
+  displayCount: number;
+  setDisplayCount: (count: number) => void;
+  loadMorePhotos: () => void;
 }>({
   userData: null,
   photos: [],
   loading: true,
   getId: getId,
+  limitedPhotos: [],
+  displayCount: 10,
+  setDisplayCount: () => {},
+  loadMorePhotos: () => {},
 });
 
 export const DataProvider = ({ children }: { children: any }) => {
@@ -32,6 +40,13 @@ export const DataProvider = ({ children }: { children: any }) => {
     { url: string; time: Date; desc: string }[]
   >([]);
   const [loading, setLoading] = useState(true);
+  const [displayCount, setDisplayCount] = useState(10);
+
+  const limitedPhotos = photos.slice(0, displayCount);
+
+  const loadMorePhotos = () => {
+    setDisplayCount((prevCount) => prevCount + 10);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,7 +92,7 @@ export const DataProvider = ({ children }: { children: any }) => {
   }, []);
 
   return (
-    <DataContext.Provider value={{ userData, photos, loading, getId }}>
+    <DataContext.Provider value={{ userData, photos, loading, getId, limitedPhotos, displayCount, setDisplayCount, loadMorePhotos }}>
       {children}
     </DataContext.Provider>
   );
