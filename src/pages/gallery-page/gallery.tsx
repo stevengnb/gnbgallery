@@ -1,6 +1,6 @@
 import Transition from "../../settings/transition";
 import BackButton from "../../components/back-button";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { auth } from "../../firebase/firebase-config";
 import Loader from "../../components/loader/loader";
 import SecuredRoute from "../../settings/secured-routes";
