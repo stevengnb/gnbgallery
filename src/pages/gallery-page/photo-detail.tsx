@@ -6,11 +6,13 @@ import SecuredRoute from "../../settings/secured-routes";
 import Transition from "../../settings/transition";
 import BackButton from "../../components/back-button";
 import { GrFormNextLink, GrFormPreviousLink } from "react-icons/gr";
+import { formatDate } from "../../settings/format-date";
+import { getId } from "../../settings/get-id";
 
 const PhotoDetail = () => {
   const navigate = useNavigate();
   const { photoId } = useParams<{ photoId: string }>();
-  const { userData, photos, loading, getId } = useContext(DataContext);
+  const { userData, photos, loading } = useContext(DataContext);
   const [photo, setPhoto] = useState<any>({});
   const [pnLoading, setPnLoading] = useState(false);
   const [pnPhoto, setPnPhoto] = useState<{ previous: string; next: string }>({
@@ -28,8 +30,8 @@ const PhotoDetail = () => {
 
   useEffect(() => {
     const getDetail = () => {
-      const photoIndex = photos.findIndex(
-        (item: any) => item.url.includes(photoId)
+      const photoIndex = photos.findIndex((item: any) =>
+        item.url.includes(photoId)
       );
 
       if (photoIndex !== -1) {
@@ -47,25 +49,6 @@ const PhotoDetail = () => {
 
     getDetail();
   }, [photos, photoId]);
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-
-    if (isNaN(date.getTime())) {
-      return "Invalid Date";
-    }
-
-    const options: Intl.DateTimeFormatOptions = {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true,
-    };
-
-    return date.toLocaleDateString("en-US", options);
-  };
 
   const handleNavigation = (url: string) => {
     setPnLoading(true);

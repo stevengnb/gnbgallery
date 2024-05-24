@@ -1,12 +1,12 @@
 import Transition from "../../settings/transition";
 import BackButton from "../../components/back-button";
 import { useContext } from "react";
-import { auth } from "../../firebase/firebase-config";
 import Loader from "../../components/loader/loader";
 import SecuredRoute from "../../settings/secured-routes";
 import AddButton from "../../components/add-button";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "../../context/data-context";
+import { getId } from "../../settings/get-id";
 
 export default function Gallery() {
   const navigate = useNavigate();
@@ -14,7 +14,6 @@ export default function Gallery() {
     userData,
     photos,
     loading,
-    getId,
     limitedPhotos,
     displayCount,
     loadMorePhotos,
@@ -24,7 +23,8 @@ export default function Gallery() {
     <SecuredRoute>
       <div className="relative h-screen overflow-x-hidden flex flex-col p-8 sm:p-10 lg:py-12 lg:px-20 xl:py-14 xl:px-32">
         <BackButton isFixed={true} />
-        {auth.currentUser?.uid === userData?.id && <AddButton />}
+        {/* {auth.currentUser?.uid === userData?.id && <AddButton />} */}
+        <AddButton />
         <div className="flex flex-col justify-start items-center">
           <div className="flex flex-col gap-3 sm:gap-4">
             <img

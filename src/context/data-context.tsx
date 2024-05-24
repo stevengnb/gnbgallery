@@ -3,17 +3,10 @@ import { createContext, useState, useEffect } from "react";
 import { db } from "../firebase/firebase-config";
 import { IUser } from "../interface/user";
 
-const getId = (id: string) => {
-  const ids = id.split("token=")[1];
-  const lastChar = ids.slice(-15);
-  return lastChar;
-};
-
 export const DataContext = createContext<{
   userData: IUser | null;
   photos: any[];
   loading: boolean;
-  getId: (id: string) => string;
   limitedPhotos: any[];
   displayCount: number;
   setDisplayCount: (count: number) => void;
@@ -22,7 +15,6 @@ export const DataContext = createContext<{
   userData: null,
   photos: [],
   loading: true,
-  getId: getId,
   limitedPhotos: [],
   displayCount: 10,
   setDisplayCount: () => {},
@@ -41,7 +33,6 @@ export const DataProvider = ({ children }: { children: any }) => {
   >([]);
   const [loading, setLoading] = useState(true);
   const [displayCount, setDisplayCount] = useState(10);
-
   const limitedPhotos = photos.slice(0, displayCount);
 
   const loadMorePhotos = () => {
@@ -52,7 +43,7 @@ export const DataProvider = ({ children }: { children: any }) => {
     const fetchData = async () => {
       console.log("fetch data kepanggil?");
       try {
-        const documentRef = doc(db, "users", "Dmi3Rfay78bU0JORfl9Y7HOiqVw1");
+        const documentRef = doc(db, "users", process.env.REACT_APP_USER_ID!);
         const docSnapshot = await getDoc(documentRef);
 
         if (docSnapshot.exists()) {
@@ -73,8 +64,6 @@ export const DataProvider = ({ children }: { children: any }) => {
               desc: photo.desc,
             }));
             photosData.sort((a: any, b: any) => b.time - a.time);
-            console.log("photos data hrsnya ada");
-            console.log(photosData);
             setPhotos(photosData);
             setLoading(false);
           } else {
@@ -92,7 +81,17 @@ export const DataProvider = ({ children }: { children: any }) => {
   }, []);
 
   return (
-    <DataContext.Provider value={{ userData, photos, loading, getId, limitedPhotos, displayCount, setDisplayCount, loadMorePhotos }}>
+    <DataContext.Provider
+      value={{
+        userData,
+        photos,
+        loading,
+        limitedPhotos,
+        displayCount,
+        setDisplayCount,
+        loadMorePhotos,
+      }}
+    >
       {children}
     </DataContext.Provider>
   );

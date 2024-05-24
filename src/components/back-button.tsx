@@ -6,6 +6,7 @@ export default function BackButton({
   isFixed = false,
   isAdd = false,
   isDetail = false,
+  isRequest = false,
 }) {
   const navigate = useNavigate();
 
@@ -17,7 +18,11 @@ export default function BackButton({
           : "absolute top-7 left-7 w-10 h-10 rounded-full hover:bg-gray-200 flex items-center justify-center transition-all duration-400"
       }
       onClick={() =>
-        isAdd || isDetail ? navigate("/stevengnb") : navigate("/")
+        isAdd || isDetail
+          ? navigate("/stevengnb")
+          : isRequest
+          ? navigate("/stevengnb/add")
+          : navigate("/")
       }
     >
       {isDetail ? (

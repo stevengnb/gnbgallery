@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import BackButton from "../../components/back-button";
 import SecuredRoute from "../../settings/secured-routes";
 import Transition from "../../settings/transition";
 import { MdCloudUpload } from "react-icons/md";
 import Loader from "../../components/loader/loader";
-import { db, imageDb } from "../../firebase/firebase-config";
+import { auth, db, imageDb } from "../../firebase/firebase-config";
 import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
-import { doc, updateDoc, arrayUnion, Timestamp } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  arrayUnion,
+  Timestamp,
+  setDoc,
+  getDoc,
+} from "firebase/firestore";
 import webpfy from "webpfy";
+import { DataContext } from "../../context/data-context";
 
 export default function AddPhoto() {
   const [image, setImage] = useState<File | null>(null);
@@ -17,6 +25,8 @@ export default function AddPhoto() {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const successMessage = "Photo uploaded successfully!";
+  const successRequestMessage = "Photo upload request submitted successfully!";
+  const { userData } = useContext(DataContext);
 
   const handleClick = () => {
     const inputField = document.querySelector(
@@ -42,6 +52,80 @@ export default function AddPhoto() {
     setImageShow("");
     setDescription("");
     setErrorMessage("");
+  };
+
+  const addPhotoGuest = async () => {
+    if (!image || description === "") {
+      setErrorMessage("All fields must be filled!");
+      return;
+    }
+
+    setLoading(true);
+    let imageUrl = "";
+    try {
+      if (image) {
+        const imagee = new FormData();
+        imagee.append("file", image);
+        imagee.append(
+          "cloud_name",
+          process.env.REACT_APP_CLOUDINARY_CLOUD_NAME!
+        );
+        imagee.append(
+          "upload_preset",
+          process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET!
+        );
+
+        const response = await fetch(
+          process.env.REACT_APP_CLOUDINARY_API_URL!,
+          {
+            method: "post",
+            body: imagee,
+          }
+        );
+
+        if (!response.ok) {
+          console.log("ada yg masalah");
+        }
+
+        const imageData = await response.json();
+        imageUrl = imageData.url
+          .toString()
+          .replace(/\.(jpeg|jpg|png)/, ".webp");
+      }
+
+      if (imageUrl !== "") addToRequest(imageUrl);
+    } catch (error) {
+      setErrorMessage("Server problem");
+      clearAllFields();
+      setLoading(false);
+    }
+  };
+
+  const addToRequest = async (url: string) => {
+    setLoading(true);
+    if (!auth.currentUser) return;
+    const docRef = doc(db, "request", auth.currentUser.uid);
+
+    const newPhotoData = {
+      url: url,
+      desc: description,
+      time: Timestamp.fromDate(new Date()),
+    };
+    clearAllFields();
+
+    try {
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        await updateDoc(docRef, { photos: arrayUnion(newPhotoData) });
+      } else {
+        await setDoc(docRef, { photos: [newPhotoData] });
+      }
+      setErrorMessage(successRequestMessage);
+    } catch (error) {
+      setErrorMessage("Error uploading image. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const addPhoto = async () => {
@@ -93,7 +177,6 @@ export default function AddPhoto() {
               }
               url = await getDownloadURL(imgRef);
               addPhotoToDB(url);
-              // console.log("Download URL:", url);
               clearAllFields();
             })
             .catch((error) => {
@@ -114,7 +197,8 @@ export default function AddPhoto() {
 
   const addPhotoToDB = async (url: string) => {
     setLoading(true);
-    const docRef = doc(db, "users", "Dmi3Rfay78bU0JORfl9Y7HOiqVw1");
+    if (!userData) return;
+    const docRef = doc(db, "users", userData.id);
 
     const newPhotoData = {
       url: url,
@@ -135,7 +219,7 @@ export default function AddPhoto() {
   };
 
   return (
-    <SecuredRoute isAdd={true}>
+    <SecuredRoute>
       <div className="relative h-full lg:h-screen overflow-x-hidden flex flex-col p-8 sm:p-10 lg:py-12 lg:px-20 xl:py-14 xl:px-32">
         <BackButton isFixed={true} isAdd={true} />
         <div className="h-full w-full flex flex-col p-2 sm:p-4 pt-16 md:p-16 items-center justify-center">
@@ -204,7 +288,8 @@ export default function AddPhoto() {
               {errorMessage !== "" && (
                 <div
                   className={
-                    errorMessage === successMessage
+                    errorMessage === successMessage ||
+                    errorMessage === successRequestMessage
                       ? "text-sm text-green-500"
                       : "text-sm text-red-500"
                   }
@@ -220,9 +305,21 @@ export default function AddPhoto() {
                       : "bg-slate-400 p-2 flex justify-center rounded-xl transition-all duration-300"
                   }
                   style={{ fontFamily: "HBLight" }}
-                  onClick={addPhoto}
+                  onClick={
+                    userData?.id === auth.currentUser?.uid
+                      ? addPhoto
+                      : addPhotoGuest
+                  }
                 >
-                  {!loading ? "UPLOAD" : <Loader />}
+                  {!loading ? (
+                    userData?.id === auth.currentUser?.uid ? (
+                      "UPLOAD"
+                    ) : (
+                      "REQUEST"
+                    )
+                  ) : (
+                    <Loader />
+                  )}
                 </button>
                 <button
                   className="bg-black flex justify-center items-center text-white h-10 font-semibold tracking-wider p-2 text-sm w-full rounded-xl text-left hover:opacity-85 transition-all duration-300 active:scale-95"

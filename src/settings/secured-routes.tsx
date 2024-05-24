@@ -6,10 +6,13 @@ import Message from "../templates/message";
 
 interface Props {
   children: React.ReactNode;
-  isAdd?: boolean;
+  isRequest?: boolean;
 }
 
-const SecuredRoute: React.FC<Props> = ({ children, isAdd = false }: Props) => {
+const SecuredRoute: React.FC<Props> = ({
+  children,
+  isRequest = false,
+}: Props) => {
   const redirectTime = 4000;
   const [authenticated, setAuthenticated] = useState(false);
   const [determined, setDetermined] = useState(false);
@@ -25,8 +28,8 @@ const SecuredRoute: React.FC<Props> = ({ children, isAdd = false }: Props) => {
           navigate("/login");
         }, redirectTime);
       } else {
-        if (isAdd) {
-          if (auth.currentUser?.uid !== "Dmi3Rfay78bU0JORfl9Y7HOiqVw1") {
+        if (isRequest) {
+          if (auth.currentUser?.uid !== process.env.REACT_APP_USER_ID) {
             setAuthenticated(false);
           } else {
             setAuthenticated(true);
