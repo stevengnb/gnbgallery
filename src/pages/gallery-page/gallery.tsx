@@ -23,7 +23,6 @@ export default function Gallery() {
     <SecuredRoute>
       <div className="relative h-screen overflow-x-hidden flex flex-col p-8 sm:p-10 lg:py-12 lg:px-20 xl:py-14 xl:px-32">
         <BackButton isFixed={true} />
-        {/* {auth.currentUser?.uid === userData?.id && <AddButton />} */}
         <AddButton />
         <div className="flex flex-col justify-start items-center">
           <div className="flex flex-col gap-3 sm:gap-4">
