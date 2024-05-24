@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 import webpfy from "webpfy";
 import { DataContext } from "../../context/data-context";
+import AddButton from "../../components/add-button";
 
 export default function AddPhoto() {
   const [image, setImage] = useState<File | null>(null);
@@ -222,6 +223,9 @@ export default function AddPhoto() {
     <SecuredRoute>
       <div className="relative h-full lg:h-screen overflow-x-hidden flex flex-col p-8 sm:p-10 lg:py-12 lg:px-20 xl:py-14 xl:px-32">
         <BackButton isFixed={true} isAdd={true} />
+        {auth.currentUser?.uid === userData?.id && (
+          <AddButton isRequest={true} />
+        )}
         <div className="h-full w-full flex flex-col p-2 sm:p-4 pt-16 md:p-16 items-center justify-center">
           <div className="flex flex-col lg:flex-row h-full w-full gap-4">
             <form

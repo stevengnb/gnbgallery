@@ -12,6 +12,7 @@ import {
 import { db } from "../../firebase/firebase-config";
 import RequestCard from "./request-card";
 import { DataContext } from "../../context/data-context";
+import Transition from "../../settings/transition";
 
 export default function PhotoRequest() {
   const [photos, setPhotos] = useState<
@@ -108,6 +109,7 @@ export default function PhotoRequest() {
             />
           ))}
         </div>
+        <Transition />
       </div>
     </SecuredRoute>
   );
