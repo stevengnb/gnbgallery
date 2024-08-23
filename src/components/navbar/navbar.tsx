@@ -41,14 +41,14 @@ function Navbar() {
 
   return (
     <div
-      className="z-10 fixed w-full flex justify-between items-center px-10 py-10 transition-all duration-600 bg-[#050c0f]"
+      className="select-none z-10 fixed w-full flex justify-between items-center px-10 py-10 transition-all duration-600 bg-[#050c0f]"
       id="idNav"
     >
       <div
         className="text-[#ECE6D5] text-base hover:cursor-default flex items-center justify-center"
         style={{ fontFamily: "Heebo, sans-serif" }}
       >
-        <p className="tracking-wider" onClick={() => navigate("/")}>
+        <p className="select-none tracking-wider" onClick={() => navigate("/")}>
           {currentUser === null
             ? "Welcome!"
             : "Welcome, " +

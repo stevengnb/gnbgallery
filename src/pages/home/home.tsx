@@ -12,7 +12,7 @@ export default function Home() {
         <div className="flex h-full w-full flex-col justify-center text-left md:text-center">
           <div>
             <p
-              className="absolute left-8 bottom-8 text-xl tracking-widest"
+              className="absolute left-8 bottom-8 text-xl tracking-widest select-none"
               style={{ fontFamily: "AntonioBold" }}
             >
               BY STEVEN
@@ -20,7 +20,7 @@ export default function Home() {
           </div>
           <div style={{ fontFamily: "AntonioBold" }}>
             <p
-              className="text-6xl md:text-9xl hover:scale-105 transition-all duration-500 hover:cursor-pointer hover:tracking-wider hover:text-white"
+              className="text-6xl md:text-9xl hover:scale-105 transition-all duration-500 hover:cursor-pointer hover:tracking-wider hover:text-white select-none"
               onClick={() => navigate("/stevengnb")}
             >
               EXPLORE MY GALLERY
