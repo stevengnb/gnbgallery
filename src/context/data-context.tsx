@@ -41,7 +41,6 @@ export const DataProvider = ({ children }: { children: any }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("fetch data kepanggil?");
       try {
         const documentRef = doc(db, "users", process.env.REACT_APP_USER_ID!);
         const docSnapshot = await getDoc(documentRef);

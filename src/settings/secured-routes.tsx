@@ -22,7 +22,6 @@ const SecuredRoute: React.FC<Props> = ({
     let timer: NodeJS.Timeout;
 
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      console.log(user);
       if (!user) {
         timer = setTimeout(() => {
           navigate("/login");
